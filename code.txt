@@ -681,6 +681,7 @@ module "ecs_cluster" {
 }
 
 module "ecs_taskdef" {
+  count           = var.want_to_create_taskdef_and_service ? 1 : 0
   source          = "./modules/ecs-taskdef"
   family          = var.task_family
   cpu             = var.task_cpu
@@ -697,14 +698,14 @@ module "ecs_taskdef" {
 }
 
 module "ecs_service" {
+  count           = var.want_to_create_taskdef_and_service ? 1 : 0
   source             = "./modules/ecs-service"
   service_name       = var.ecs_service_name
   cluster_id         = module.ecs_cluster.ecs_cluster_id
   cluster_name       = module.ecs_cluster.ecs_cluster_name
 
   # Updated: pass task definition ARN
-  task_definition_arn = module.ecs_taskdef.task_definition_arn
-
+  task_definition_arn = module.ecs_taskdef[0].task_definition_arn
   desired_count      = var.desired_count
   min_count          = var.min_count
   max_count          = var.max_count
@@ -744,17 +745,31 @@ output "alb_listener_arn" { value = module.alb.alb_listener_arn }
 output "ecs_cluster_id" { value = module.ecs_cluster.ecs_cluster_id }
 output "ecs_cluster_arn" { value = module.ecs_cluster.ecs_cluster_arn }
 output "ecs_cluster_name" { value = module.ecs_cluster.ecs_cluster_name }
-# ECS Task Definition
-output "task_definition_arn" { value = module.ecs_taskdef.task_definition_arn }
-output "task_definition_family" { value = module.ecs_taskdef.task_definition_family }
-output "task_definition_revision" { value = module.ecs_taskdef.task_definition_revision }
-output "ecs_task_log_group" { value       = module.ecs_taskdef.ecs_task_log_group }
-# ECS Service SG
-output "ecs_service_sg_id" { value = module.ecs_service_sg.ecs_service_sg_id }
-# ECS Service
-output "ecs_service_name" { value = module.ecs_service.ecs_service_name }
-output "ecs_service_id"   { value = module.ecs_service.ecs_service_id }
-output "ecs_service_arn"  { value = module.ecs_service.ecs_service_arn }
+
+# ECS Task Definition outputs
+output "task_definition_arn" {
+  value = try(module.ecs_taskdef[0].task_definition_arn, null)
+}
+output "task_definition_family" {
+  value = try(module.ecs_taskdef[0].task_definition_family, null)
+}
+output "task_definition_revision" {
+  value = try(module.ecs_taskdef[0].task_definition_revision, null)
+}
+output "ecs_task_log_group" {
+  value = try(module.ecs_taskdef[0].ecs_task_log_group, null)
+}
+
+# ECS Service outputs
+output "ecs_service_name" {
+  value = try(module.ecs_service[0].ecs_service_name, null)
+}
+output "ecs_service_id" {
+  value = try(module.ecs_service[0].ecs_service_id, null)
+}
+output "ecs_service_arn" {
+  value = try(module.ecs_service[0].ecs_service_arn, null)
+}
 ====================================================================================================================================================================
 # (ROOT)provider
 terraform {
@@ -777,7 +792,7 @@ azs             = ["us-east-1a", "us-east-1b"]
 public_subnets  = ["10.0.1.0/24", "10.0.2.0/24"]
 private_subnets = ["10.0.3.0/24", "10.0.4.0/24"]
 
-# ALB Security Group
+# Security Group
 sg_name         = "project-alb-sg"
 # ECS Service SG
 ecs_service_sg_name = "project-ecs-service-sg"
@@ -791,13 +806,16 @@ alb_name = "project-alb"
 # ECS Cluster
 cluster_name = "project-cluster"
 
+# wether you want to create taskdefination and service or not
+want_to_create_taskdef_and_service = true
+
 # ECS Task Definition
 task_family        = "project-task"
 task_cpu           = "256" # 1024 CPU units = 1 vCPU.
 task_memory        = "512" # task memory/ram  in MB
 
 container_name     = "project-app"
-container_image    = "" #IMAGE URL LATEST 
+container_image    = "084828600005.dkr.ecr.us-east-1.amazonaws.com/taimoor/project:latest" #image latest url
 container_port     = 5000 # port on which container is running
 container_cpu      = 128 # 1024 CPU units = 1 vCPU.
 gpu                = ""
@@ -833,6 +851,11 @@ variable "target_group_name" { type = string }
 variable "alb_name" { type = string }
 # CLUSTER NAME
 variable "cluster_name" { type = string}
+# wether you want to create taskdefination and service or not
+variable "want_to_create_taskdef_and_service" {
+  type = bool 
+  default = true 
+}
 # ECS Task Definition
 variable "task_family" { type = string }
 variable "task_cpu" { type = string }
