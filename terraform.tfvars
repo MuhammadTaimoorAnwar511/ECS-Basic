@@ -22,7 +22,7 @@ alb_name = "project-alb"
 cluster_name = "project-cluster"
 
 # wether you want to create taskdefination and service or not
-want_to_create_taskdef_and_service = true
+want_to_create_taskdef_and_service = false
 
 # ECS Task Definition
 task_family        = "project-task"
@@ -36,6 +36,9 @@ container_cpu      = 128 # 1024 CPU units = 1 vCPU.
 gpu                = ""
 memory_hard_limit  = 512 #  container memory/ram  in MB
 memory_soft_limit  = 256 #  container memory/ram  in MB
+container_environment = [
+
+]
 
 # ECS Service
 ecs_service_name    = "project-service"
@@ -44,7 +47,6 @@ min_count           = 1
 max_count           = 4
 scaling_policy_name = "project-scaling-policy"
 scaling_metric      = "ECSServiceAverageCPUUtilization" # "ECSServiceAverageCPUUtilization" or "ECSServiceAverageMemoryUtilization"
-
 
 # environment
 environment     = "development"

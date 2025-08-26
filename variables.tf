@@ -30,6 +30,14 @@ variable "container_cpu" { type = number }
 variable "gpu" { type = string }
 variable "memory_hard_limit" { type = number }
 variable "memory_soft_limit" { type = number }
+variable "container_environment" {
+  type        = list(object({
+    name  = string
+    value = string
+  }))
+  default     = []
+}
+
 # ECS Service SG
 variable "ecs_service_sg_name" { type = string }
 # ECS Service

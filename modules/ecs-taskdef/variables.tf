@@ -52,7 +52,14 @@ variable "memory_soft_limit" {
   type        = number
   default     = 256
 }
-
+variable "environment" {
+  description = "Optional environment variables for the container"
+  type        = list(object({
+    name  = string
+    value = string
+  }))
+  default     = []
+}
 variable "region" {
   description = "AWS region"
   type        = string

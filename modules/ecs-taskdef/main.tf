@@ -31,6 +31,8 @@ resource "aws_ecs_task_definition" "this" {
       cpu               = var.container_cpu
       memoryReservation = var.memory_soft_limit
       memory            = var.memory_hard_limit
+      # ✅ Environment variables (optional)
+      environment = var.environment
 
       logConfiguration = {
         logDriver = "awslogs"
