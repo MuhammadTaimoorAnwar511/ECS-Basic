@@ -36,10 +36,10 @@ container_cpu      = 128 # 1024 CPU units = 1 vCPU.
 gpu                = ""
 memory_hard_limit  = 512 #  container memory/ram  in MB
 memory_soft_limit  = 256 #  container memory/ram  in MB
+#   { name = "PORT", value = "5000" },
 container_environment = [
 
 ]
-
 # ECS Service
 ecs_service_name    = "project-service"
 desired_count       = 2
