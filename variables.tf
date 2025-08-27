@@ -30,12 +30,28 @@ variable "container_cpu" { type = number }
 variable "gpu" { type = string }
 variable "memory_hard_limit" { type = number }
 variable "memory_soft_limit" { type = number }
+variable "container_essential" {type = bool }
+
 variable "container_environment" {
   type        = list(object({
     name  = string
     value = string
   }))
   default     = []
+}
+
+variable "container_dependencies" {
+  description = <<EOT
+Optional list of container startup dependencies.
+Each item must have:
+  - containerName
+  - condition (START, COMPLETE, SUCCESS, HEALTHY)
+EOT
+  type = list(object({
+    containerName = string
+    condition     = string
+  }))
+  default = []
 }
 
 # ECS Service SG

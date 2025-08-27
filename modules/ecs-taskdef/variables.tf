@@ -60,6 +60,25 @@ variable "environment" {
   }))
   default     = []
 }
+variable "container_essential" {
+  description = "Whether the container is essential (true/false)"
+  type        = bool
+  default     = true
+}
+variable "container_dependencies" {
+  description = <<EOT
+Optional list of container startup dependencies.
+Each item must have:
+  - containerName
+  - condition (START, COMPLETE, SUCCESS, HEALTHY)
+EOT
+  type = list(object({
+    containerName = string
+    condition     = string
+  }))
+  default = []
+}
+
 variable "region" {
   description = "AWS region"
   type        = string

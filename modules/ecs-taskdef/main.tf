@@ -11,7 +11,7 @@ resource "aws_ecs_task_definition" "this" {
     {
       name      = var.container_name
       image     = var.container_image
-      essential = true
+      essential = var.container_essential
 
       portMappings = [
         {
@@ -42,6 +42,11 @@ resource "aws_ecs_task_definition" "this" {
           awslogs-stream-prefix = var.container_name
         }
       }
+      # ✅ Startup Dependency Ordering (optional)
+      dependsOn = (
+        length(var.container_dependencies) > 0 ?
+        var.container_dependencies : null
+      )
     }
   ])
 }

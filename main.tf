@@ -82,9 +82,11 @@ module "ecs_taskdef" {
   gpu             = var.gpu
   memory_hard_limit = var.memory_hard_limit
   memory_soft_limit = var.memory_soft_limit
+  container_essential   = var.container_essential
   environment     = var.container_environment
   region          = var.region
   tags            = var.tags
+  container_dependencies = var.container_dependencies
 }
 
 module "ecs_service" {

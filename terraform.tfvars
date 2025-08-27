@@ -22,7 +22,7 @@ alb_name = "project-alb"
 cluster_name = "project-cluster"
 
 # wether you want to create taskdefination and service or not
-want_to_create_taskdef_and_service = false
+want_to_create_taskdef_and_service = true
 
 # ECS Task Definition
 task_family        = "project-task"
@@ -36,15 +36,25 @@ container_cpu      = 128 # 1024 CPU units = 1 vCPU.
 gpu                = ""
 memory_hard_limit  = 512 #  container memory/ram  in MB
 memory_soft_limit  = 256 #  container memory/ram  in MB
-#   { name = "PORT", value = "5000" },
+container_essential = true
+# environment variables
+    #{ name = "PORT", value = "5000" },
 container_environment = [
+{ name = "PORT", value = "5000" },
+{ name = "MONGODB_URI", value = "mongodb+srv://i211232:2r7SuFkegy9xohZy@cluster0.pvffmnh.mongodb.net/taimoor" }
+]
+# Startup dependency ordering
+    #containerName = "sidecar"
+    #condition     = "HEALTHY"
+container_dependencies = [
 
 ]
+
 # ECS Service
 ecs_service_name    = "project-service"
-desired_count       = 2
+desired_count       = 1
 min_count           = 1
-max_count           = 4
+max_count           = 1
 scaling_policy_name = "project-scaling-policy"
 scaling_metric      = "ECSServiceAverageCPUUtilization" # "ECSServiceAverageCPUUtilization" or "ECSServiceAverageMemoryUtilization"
 
