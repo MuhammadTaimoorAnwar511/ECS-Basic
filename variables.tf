@@ -67,7 +67,6 @@ variable "scaling_metric" {
   default = "ECSServiceAverageCPUUtilization"
 }
 
-
 # Env + Tags
 variable "environment" { type = string }
 variable "owner" { type = string }
